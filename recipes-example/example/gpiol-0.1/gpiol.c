@@ -80,6 +80,7 @@ static int linuxgpio_dir(unsigned int gpio, unsigned int dir)
   char buf[60];
 
   snprintf(buf, sizeof(buf), "/sys/class/gpio/gpio%u/direction", gpio);
+  //printf("%s\n",buf);
 
   fd = open(buf, O_WRONLY);
   if (fd < 0) {
@@ -135,6 +136,16 @@ int ch_gpio(unsigned int gpio, int value)
   return linuxgpio_setup_pin(gpio, value);
 }
 
+int closegpio(unsigned int gpio)
+{
+  return linuxgpio_unexport(gpio);
+}
+
+int readgpio(unsigned int gpio)
+{
+  return linuxgpio_read_pin(gpio);
+}
+
 static int linuxgpio_setup_pin(unsigned int gpio, int value)
 {
   int gpio_pin;
@@ -146,12 +157,30 @@ static int linuxgpio_setup_pin(unsigned int gpio, int value)
   if(value){
     r = write(gpio_pin, "1",1);
   }else{
-    r = write(gpio_pin, "1",0);
+    r = write(gpio_pin, "0",1);
   }
   if(r!=1){
     return -1;
   }
   return 0;
+}
+
+static int linuxgpio_read_pin(unsigned int gpio)
+{
+  int gpio_pin;
+  int r = -1;
+/*  char buf[20];
+  gpio_pin = linuxgpio_openfd(gpio);
+  if (gpio_pin < 0){
+    return r;
+  }
+  read(gpio_pin,buf,1);
+  if (strcmp(buf,"1") == 0){
+    r = 1;
+  }else if(strcmp(buf,"0") == 0){
+    r = 0;
+  }*/
+  return r;
 }
 
 /*
