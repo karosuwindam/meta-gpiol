@@ -10,17 +10,17 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 SRC_URI = "file://gpiol.c"
 SRC_URI += "file://gpiol.h"
-#SRC_URI += "file://main.cpp"
-SRC_URI += "file://main.c"
-#SRC_URI += "file://gpio_class.h"
-#SRC_URI += "file://gpio_class.cpp"
+SRC_URI += "file://main.cpp"
+#SRC_URI += "file://main.c"
+SRC_URI += "file://gpio_class.h"
+SRC_URI += "file://gpio_class.cpp"
 
 
 S = "${WORKDIR}"
 
 do_compile() {
-	     ${CC} ${LDFLAGS} gpiol.c main.c -o gpiol
-#	     ${CC} ${LDFLAGS} gpiol_class.cpp.cpp main.cpp gpiol.c -o gpiol
+#	     ${CC} ${LDFLAGS} gpiol.c main.c -o gpiol
+	     ${CXX} ${LDFLAGS} gpio_class.cpp main.cpp gpiol.c -o gpiol
 }
 
 do_install() {
