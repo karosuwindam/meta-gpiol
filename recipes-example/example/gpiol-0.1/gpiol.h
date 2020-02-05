@@ -1,6 +1,5 @@
-
-
-#define GPIO21 21
+#define GPIO13 13
+#define GPIO19 19
 #define GPIO26 26
 #define GPIO_DIR_IN	0
 #define GPIO_DIR_OUT	1

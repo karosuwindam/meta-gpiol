@@ -8,6 +8,6 @@ class GpioL
 public:
     int gpioCreate(int gpio,int inout);
     void gpioChange(int output);
-    //int gpioRead();
+    int gpioRead();
     void gpioClose();
 };

@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "gpiol.h"
-
+#include <cstring>
 //#define GPIOPATH "/sys/class/gpio"
 
 /*
@@ -141,7 +141,7 @@ int closegpio(unsigned int gpio)
   return linuxgpio_unexport(gpio);
 }
 
-int readgpio(unsigned int gpio)
+int read_gpio(unsigned int gpio)
 {
   return linuxgpio_read_pin(gpio);
 }
@@ -162,6 +162,7 @@ static int linuxgpio_setup_pin(unsigned int gpio, int value)
   if(r!=1){
     return -1;
   }
+  close(gpio_pin);
   return 0;
 }
 
@@ -169,17 +170,25 @@ static int linuxgpio_read_pin(unsigned int gpio)
 {
   int gpio_pin;
   int r = -1;
-/*  char buf[20];
+  char buf;
   gpio_pin = linuxgpio_openfd(gpio);
   if (gpio_pin < 0){
     return r;
   }
-  read(gpio_pin,buf,1);
-  if (strcmp(buf,"1") == 0){
+  if (lseek(gpio_pin, 0, SEEK_SET)<0){
+    close(gpio_pin);
+    return -1;
+  }
+  if(read(gpio_pin, &buf,1) != 1){
+    close(gpio_pin);
+    return -1;
+  }
+  if (buf == '1'){
     r = 1;
-  }else if(strcmp(buf,"0") == 0){
+  }else if(buf == '0'){
     r = 0;
-  }*/
+  }
+  close(gpio_pin);
   return r;
 }
 

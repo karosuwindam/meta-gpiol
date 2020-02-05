@@ -28,11 +28,11 @@ void GpioL::gpioClose()
     closegpio(gpioPort);
     return;
 }
-/*
+
 int GpioL::gpioRead()
 {
     int r;
     r = read_gpio(gpioPort);
     //r = 1;
     return r;
-}*/
+}
