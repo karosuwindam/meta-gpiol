@@ -1,0 +1,10 @@
+[Unit]
+Description = "gpio pin in out"
+After=local-fs.target
+ConditionPathExists=/usr/bin
+[Service]
+ExecStart=/opt/gpiol/autorun_gpio.sh
+Restart=no
+Type=simple
+[Install]
+WantedBy=multi-user.target

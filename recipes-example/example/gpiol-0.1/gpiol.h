@@ -1,8 +1,11 @@
-#define GPIO13 13
-#define GPIO19 19
-#define GPIO26 26
-#define GPIO_DIR_IN	0
-#define GPIO_DIR_OUT	1
+// #include "enum.h"
+
+
+// #define GPIO13 13
+// #define GPIO19 19
+// #define GPIO26 26
+// #define GPIO_DIR_IN	0
+// #define GPIO_DIR_OUT	1
 
 
 extern int opengpio(unsigned int gpio, unsigned int inout);

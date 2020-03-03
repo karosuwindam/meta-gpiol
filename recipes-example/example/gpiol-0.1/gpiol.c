@@ -4,46 +4,16 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include "enum.h"
 #include "gpiol.h"
-#include <cstring>
-//#define GPIOPATH "/sys/class/gpio"
+// #include <cstring>
 
-/*
-int gpioopen(int port)
-{
-    int fp,len;
-    char *gpio;
-    sprintf(gpio,"%s/export",GPIOPATH);
-    fp = open(gpio,O_WRONLY);
-    if (fp < 0){
-        return fp;
-    }
-    fprintf(fp,"%i",port);
-    close(fp);
-
-    //char * command = "export";
-    //system(command);
-    return 0;
-}
-
-int gpioclose(int port)
-{
-    FILE *fp;
-    char *unexport;
-    sprintf(unexport,"&s/unexport",GPIOPATH);
-    fp = open(unexport,O_WRONLY);
-    fprintf(fp,"%i",port);
-    close(fp);
-
-    return 0;
-}
-*/
 static int linuxgpio_export(unsigned int gpio)
 {
   int fd, len, r;
   char buf[11];
 
-  fd = open("/sys/class/gpio/export", O_WRONLY);
+  fd = open(GPIO_EXPORT, O_WRONLY);
   if (fd < 0) {
     perror("Can't open /sys/class/gpio/export");
     return fd;
@@ -61,7 +31,7 @@ static int linuxgpio_unexport(unsigned int gpio)
   int fd, len, r;
   char buf[11];
 
-  fd = open("/sys/class/gpio/unexport", O_WRONLY);
+  fd = open(GPIO_UNEXPORT, O_WRONLY);
   if (fd < 0) {
     perror("Can't open /sys/class/gpio/unexport");
     return fd;
@@ -79,8 +49,7 @@ static int linuxgpio_dir(unsigned int gpio, unsigned int dir)
   int fd, r;
   char buf[60];
 
-  snprintf(buf, sizeof(buf), "/sys/class/gpio/gpio%u/direction", gpio);
-  //printf("%s\n",buf);
+  snprintf(buf, sizeof(buf), "%s/gpio%u/direction",GPIO_PATH, gpio);
 
   fd = open(buf, O_WRONLY);
   if (fd < 0) {
@@ -112,13 +81,16 @@ static int linuxgpio_openfd(unsigned int gpio)
 {
   char filepath[60];
 
-  snprintf(filepath, sizeof(filepath), "/sys/class/gpio/gpio%u/value", gpio);
+  snprintf(filepath, sizeof(filepath), "%s/gpio%u/value",GPIO_PATH, gpio);
   return (open(filepath, O_RDWR));
 }
 
 int opengpio(unsigned int gpio, unsigned int inout)
 {
   int rf;
+  if (gpio >= GPIO_MAX){
+    return -1;
+  }
   rf = linuxgpio_export(gpio);
   if(rf >= 0){
     if(inout == GPIO_DIR_OUT){
@@ -191,14 +163,3 @@ static int linuxgpio_read_pin(unsigned int gpio)
   close(gpio_pin);
   return r;
 }
-
-/*
-int main(int argc, char **argv)
-{
-    linuxgpio_export(GPIO21);
-    linuxgpio_dir(GPIO21,GPIO_DIR_OUT);
-    printf("Hello World!\n");
-
-    return 0;
-}
-*/

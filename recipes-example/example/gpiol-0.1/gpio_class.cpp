@@ -4,8 +4,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-
 #include <iostream>
+
+#include "enum.h"
 #include "gpio_class.h"
 
 
