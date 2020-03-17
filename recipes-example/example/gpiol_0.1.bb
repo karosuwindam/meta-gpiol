@@ -22,22 +22,27 @@ SRC_URI += "file://gpiol.service"
 
 S = "${WORKDIR}"
 
-FILES_${PN} += " /opt/* /usr/lib/systemd/user/*"
+# FILES_${PN} += " /opt/* /usr/lib/systemd/*"
+FILES_${PN} += " /opt/* /usr/lib/systemd/* ${sysconfdir}/init.d/* ${sysconfdir}/rc5.d/*"
 
 do_compile() {
 #	     ${CC} ${LDFLAGS} gpiol.c main.c -o gpiol
 #	     ${CXX} ${LDFLAGS} gpio_class.cpp main.cpp gpiol.c -o gpiol
 	     ${CXX} ${LDFLAGS}  -Wall -std=c++11 -pthread *.cpp *.c -o gpiol
-		 cat ${WORKDIR}/auterun_gpio.sh > auterun_gpio.sh
-		 cat ${WORKDIR}/gpiol.service > gpiol.service
+		#  cat ${WORKDIR}/auterun_gpio.sh > auterun_gpio.sh
+		#  cat ${WORKDIR}/gpiol.service > gpiol.service
 }
 
 do_install() {
 	    install -d ${D}${bindir}
 	    install -m 0755 gpiol ${D}${bindir}
-	    install -d ${D}/opt/gpiol
-		install -d ${D}/usr/lib/systemd/user
+	    # install -d ${D}/opt/gpiol
+		# install -d ${D}/usr/lib/systemd/user
 #	    install -d ${D}/etc/systemd/system
-		install -m 755 ${WORKDIR}/auterun_gpio.sh ${D}/opt/gpiol
-		install -m 0644 ${WORKDIR}/gpiol.service ${IMAGE_ROOTFS}/usr/lib/systemd/user
+		install -d ${D}${sysconfdir}/init.d
+		install -d ${D}${sysconfdir}/rc5.d
+		install -m 755 ${WORKDIR}/autorun_gpio.sh ${D}${sysconfdir}/init.d
+		ln -s ${sysconfdir}/init.d/autorun_gpio.sh ${D}${sysconfdir}/rc5.d/S98gpiol.sh
+		# install -m 755 ${WORKDIR}/autorun_gpio.sh ${D}/opt/gpiol
+		# install -m 644 ${WORKDIR}/gpiol.service ${D}/usr/lib/systemd/user
 }

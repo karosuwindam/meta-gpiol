@@ -22,8 +22,10 @@ void sig_handler(int signo)
         printf("received SIGKILL¥n");
     } else if (signo == SIGSTOP) {
         printf("received SIGSTOP¥n");
-    } else if (signo == SIGTERM) {
-        printf("received SIGTERM¥n");
+    } else if (signo == SIGINT){       //ctrl+c
+        printf("received SIGQUIT\n");
+    } else if (signo == SIGTERM){       //15
+        printf("received SIGTERM\n");
     }
     g_hoge = 1;
 }
@@ -37,11 +39,6 @@ int main(int argc, char **argv)
     }
  
     /* シグナルハンドラの設定 */
-    if (signal(SIGTERM, sig_handler) == SIG_ERR) {
-        printf("¥ncan't catch SIGUSR1¥n");
-    }
- 
-    /* シグナルハンドラの設定 */
     if (signal(SIGKILL, sig_handler) == SIG_ERR) {
         printf("¥ncan't catch SIGKILL¥n");
     }
@@ -49,6 +46,14 @@ int main(int argc, char **argv)
     /* シグナルハンドラの設定 */
     if (signal(SIGSTOP, sig_handler) == SIG_ERR) {
         printf("¥ncan't catch SIGSTOP¥n");
+    }
+    /* シグナルハンドラの設定 */
+    if (signal(SIGINT, sig_handler) == SIG_ERR) {
+        printf("¥ncan't catch SIGINT");
+    }
+    /* シグナルハンドラの設定 */
+    if (signal(SIGTERM, sig_handler) == SIG_ERR) {
+        printf("¥ncan't catch SIGTERM");
     }
 
     GpioThread gpiolist[3];
@@ -61,21 +66,14 @@ int main(int argc, char **argv)
     }
     gpiolist[2].Chgpio(ON);
     gpiolist[1].Chgpio(ON);
-    // while(num < 1000*10){
     while(g_hoge==0){
         if(num%2000==0){
-            // if(gpiolist[2].gpiopin != 0){
-                // gpiolist[2].Chgpio(0);
-            // }else{
-                // gpiolist[2].Chgpio(1);
-            // }
             gpiolist[2].Chgpio(gpiolist[2].gpiopin == OFF);
-            printf("%i,%i\n",num,gpiolist[2].gpiopin);
+            // printf("%i,%i\n",num,gpiolist[2].gpiopin);
         }
         usleep(1000);
         num++;
     }
-    //sleep(10);
     for(int i=0;i<3;i++){
         gpiolist[i].Stop();
         gpiolist[i].DelWhread();
